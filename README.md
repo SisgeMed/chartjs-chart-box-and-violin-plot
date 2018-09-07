@@ -22,8 +22,8 @@ then generate a new component:
 
 modify boxplot.component.ts as follow:
 
-`
-import { Component, OnInit, OnChanges, ElementRef, SimpleChanges, NgZone } from '@angular/core';
+```typescript
+import { Component, OnInit, OnChanges, ElementRef, SimpleChanges, NgZone } from '@angular/core';`
 import { Chart } from 'chart.js';
 import 'chartjs-chart-box-and-violin-plot-sisge';
 
@@ -178,13 +178,12 @@ export class BoxplotComponent implements OnInit, OnChanges {
   }
 
 }
-
-`
-
-
+```
 replace app.component.html content with the following code:
 
-`<app-boxplot></app-boxplot>`
+```typescript
+<app-boxplot></app-boxplot>
+```
 
 then run 
 
