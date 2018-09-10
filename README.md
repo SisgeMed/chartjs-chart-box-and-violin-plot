@@ -131,7 +131,6 @@ export class BoxplotComponent implements OnInit, OnChanges {
           },
           animation: {
             onProgress: function (data) {
-                    console.log('in progress chartArea', data.chart.chartArea);
                     const chartLeft = data.chart.chartArea.left;
                     const chartWidth = data.chart.chartArea.right - chartLeft;
                     const chartHeight = data.chart.chartArea.bottom - data.chart.chartArea.top;
