@@ -179,6 +179,15 @@ export class BoxplotComponent implements OnInit, OnChanges {
 
 }
 ```
+
+update css:
+```typescript
+.chart-wrapper {
+  width: 1200px;
+  height: 1000px;
+  position: relative;
+}
+```
 replace app.component.html content with the following code:
 
 ```typescript
