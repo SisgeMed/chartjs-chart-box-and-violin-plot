@@ -187,6 +187,14 @@ update css:
   position: relative;
 }
 ```
+
+update html
+```typescript
+<div class="chart-wrapper" id="printable">
+  <canvas></canvas>
+</div>
+```
+
 replace app.component.html content with the following code:
 
 ```typescript
