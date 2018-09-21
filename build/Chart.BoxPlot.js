@@ -1176,17 +1176,17 @@ var defaults$2 = {
 
       var position = this._chart.canvas.getBoundingClientRect();
 
-      var x_tooltip = position.left + tooltipModel.caretX + 20;
-      if(x_tooltip + tooltip_width < position.width){
-        tooltipEl.style.left = x_tooltip + 'px';
+      var x_tooltip = position.left + tooltipModel.caretX;
+      if(x_tooltip + tooltip_width < position.width + position.left){
+        tooltipEl.style.left = x_tooltip + 20 + 'px';
       } else {
-        tooltipEl.style.left = tooltipModel.caretX - (tooltip_width + 25 ) + 'px';
+        tooltipEl.style.left = x_tooltip - (tooltip_width + 30 ) + 'px';
       }
 
       // Display, position, and set styles for font
       tooltipEl.style.opacity = 1;
       tooltipEl.style.position = 'absolute';
-      tooltipEl.style.top = 0;//position.top + tooltipModel.caretY + 'px';
+      tooltipEl.style.top = position.top + 'px';//position.top + tooltipModel.caretY + 'px';
       tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
       tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
       tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;

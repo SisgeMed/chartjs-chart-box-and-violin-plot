@@ -16,7 +16,7 @@
     "fetchSpec": "latest"
   },
   "name": "chartjs-chart-box-and-violin-plot-sisge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "deprecated": false,
   "description": "",
   "devDependencies": {
