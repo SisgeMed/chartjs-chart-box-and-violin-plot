@@ -1048,25 +1048,17 @@ var defaults$2 = {
     custom: function(tooltipModel, data) {
       // Tooltip Element
       var tooltipEl = document.getElementById('chartjs-tooltip');
+      var wrapper = document.getElementsByClassName('chart-wrapper');
 
       if(tooltipEl) {
-        document.body.removeChild(tooltipEl);
+        tooltipEl.remove();
       }
 
-      // Create element on first render
-      //if (!tooltipEl) {
-
-          // ctx.fillText("Outliers %",95,300);
-
-
-
-      //}
       if (tooltipModel.body) {
         tooltipEl = document.createElement('div');
         tooltipEl.id = 'chartjs-tooltip';
-        // tooltipEl.innerHTML = "<table></table>";
         tooltipEl.style.padding = 0;
-        document.body.appendChild(tooltipEl);
+        wrapper[0].appendChild(tooltipEl);
 
         var tooltip_width = 300;
         var tooltip_height =  350;
@@ -1176,8 +1168,8 @@ var defaults$2 = {
 
       var position = this._chart.canvas.getBoundingClientRect();
 
-      var x_tooltip = position.left + tooltipModel.caretX;
-      if(x_tooltip + tooltip_width < position.width + position.left){
+      var x_tooltip = tooltipModel.caretX;
+      if(x_tooltip + tooltip_width < position.width){
         tooltipEl.style.left = x_tooltip + 20 + 'px';
       } else {
         tooltipEl.style.left = x_tooltip - (tooltip_width + 30 ) + 'px';
@@ -1186,7 +1178,7 @@ var defaults$2 = {
       // Display, position, and set styles for font
       tooltipEl.style.opacity = 1;
       tooltipEl.style.position = 'absolute';
-      tooltipEl.style.top = position.top + 'px';//position.top + tooltipModel.caretY + 'px';
+      tooltipEl.style.top = 0 + 'px';//position.top + tooltipModel.caretY + 'px';
       tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
       tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
       tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
@@ -1225,9 +1217,8 @@ var defaults$2 = {
       }
 
       function Link_click(e) {
-          if (isLink) {
-              window.location = linkText;
-          }
+        var event = new CustomEvent("onClickLink");
+        wrapper[0].dispatchEvent(event);
       }
 
 
