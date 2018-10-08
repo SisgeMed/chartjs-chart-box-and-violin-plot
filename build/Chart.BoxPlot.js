@@ -1233,7 +1233,12 @@ var defaults$2 = {
         if (!b) {
           return label + 'NaN';
         }
-        return label + ' (min: ' + b.min + ', q1: ' + b.q1 + ', median: ' + b.median + ', mean: '+ b.mean +', q3: ' + b.q3 + ', max: ' + b.max + ', total: ' + b.total + ', wiskerMin: ' + b.whiskerMin + ', wiskerMax: ' + b.whiskerMax + ', outliers%: ' + parseFloat(b.outliers.length / b.total).toPrecision(3) +')';
+        if(b.outlier_ext ) {
+          label += label + ' (min: ' + b.min + ', q1: ' + b.q1 + ', median: ' + b.median + ', mean: '+ b.mean +', q3: ' + b.q3 + ', max: ' + b.max + ', total: ' + b.total + ', wiskerMin: ' + b.whiskerMin + ', wiskerMax: ' + b.whiskerMax + ', outliers: ' + b.outlier_ext +')';
+        }else {
+          label += label + ' (min: ' + b.min + ', q1: ' + b.q1 + ', median: ' + b.median + ', mean: '+ b.mean +', q3: ' + b.q3 + ', max: ' + b.max + ', total: ' + b.total + ', wiskerMin: ' + b.whiskerMin + ', wiskerMax: ' + b.whiskerMax + ', outliers%: ' + parseFloat(b.outliers.length / b.total).toPrecision(3) * 100 +')';
+        }
+        return label
       }
     }
   }
