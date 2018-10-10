@@ -1292,7 +1292,210 @@ var boxplot = Object.assign({}, array$1, {
 var BoxPlot = Chart.controllers.boxplot = Chart.controllers.bar.extend(boxplot);
 var HorizontalBoxPlot = Chart.controllers.horizontalBoxplot = Chart.controllers.horizontalBar.extend(boxplot);
 
-var defaults$3 = {};
+var defaults$3 = {
+  tooltips: {
+    enabled: false,
+    custom: function(tooltipModel, data) {
+      // Tooltip Element
+      var tooltipEl = document.getElementById('chartjs-tooltip');
+      var wrapper = document.getElementsByClassName('chart-wrapper');
+
+      if(tooltipEl) {
+        tooltipEl.remove();
+      }
+
+      if (tooltipModel.body) {
+        tooltipEl = document.createElement('div');
+        tooltipEl.id = 'chartjs-tooltip';
+        tooltipEl.style.padding = 0;
+        wrapper[0].appendChild(tooltipEl);
+
+        var tooltip_width = 300;
+        var tooltip_height =  350;
+        var tooltip_x =  0;
+        var tooltip_y =  0;
+
+        var c = document.createElement('canvas');
+        c.id = "mycanvas";
+        c.width  = tooltip_width;
+        c.height = tooltip_height;
+        c.style.zIndex   = 8;
+        c.style.position = "absolute";
+        c.style.border   = "1px solid";
+        c.style.boxShadow = '5px 5px 10px #888888';
+        tooltipEl.appendChild(c);
+
+        var ctx = c.getContext('2d');
+
+        ctx.rect(tooltip_x,tooltip_y,tooltip_width,tooltip_height);
+        ctx.fillStyle = '#FEFFE0';
+        ctx.fill();
+
+
+        draw_violinShape(ctx, '5', '50', '40', '140');
+ /*       
+        // wisker (max)
+        ctx.moveTo(10, 50);
+        ctx.lineTo(40, 50);
+        ctx.moveTo(25, 50);
+        ctx.lineTo(25, 90);
+
+        // box
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(10,90,30,60);
+        ctx.strokeRect(10,90,30,60);
+        // mediana
+        ctx.moveTo(10, 126);
+        ctx.lineTo(40, 126);
+
+        // wisker (min)
+        ctx.moveTo(10, 190);
+        ctx.lineTo(40, 190);
+        ctx.moveTo(25, 150);
+        ctx.lineTo(25, 190);
+        ctx.stroke();
+*/
+        // labels
+        ctx.font = "12px Arial";
+        ctx.fillStyle = '#000000';
+        ctx.fillText("Nr. rilevazioni",65,24);
+        ctx.fillText("Q3 + 1,5(Q3 - Q1)",50,54);
+        ctx.fillText("Q3 + (75th Percentile)",50,94);
+        ctx.fillText("Mediana",50,130);
+        ctx.fillText("Q1 + (25th Percentile)",50,154);
+        ctx.fillText("Q1 - 1,5(Q3 - Q1)",50,194);
+
+        ctx.fillText("Massimo",65,230);
+        ctx.fillText("Media",65,250);
+        ctx.fillText("Mimimo",65,270);
+        ctx.fillText("Outliers %",65,300);
+
+        var stringValues = tooltipModel.body[0].lines[0].split('(')[1].replace(')','');
+        var labels = stringValues.split(',');
+        ctx.font = "bold 12px Arial";
+
+        var min = convertToHourMinString(labels[0].split(':')[1].trim());
+        var q1 = convertToHourMinString(labels[1].split(':')[1].trim());
+        var median = convertToHourMinString(labels[2].split(':')[1].trim());
+        var mean = convertToHourMinString(labels[3].split(':')[1].trim());
+        var q3 = convertToHourMinString(labels[4].split(':')[1].trim());
+        var max = convertToHourMinString(labels[5].split(':')[1].trim());
+        var total = labels[6].split(':')[1].trim();
+        var whiskerMin = convertToHourMinString(labels[7].split(':')[1].trim());
+        var whiskerMax = convertToHourMinString(labels[8].split(':')[1].trim());
+        var outliers_perc =  labels[9].split(':')[1].trim();
+
+        ctx.fillText(total,200,24);
+        ctx.fillText(q3,200,94);
+        ctx.fillText(median,200,130);
+        ctx.fillText(q1,200,154);
+        ctx.fillText(max,200,230);
+        ctx.fillText(mean,200,250);
+        ctx.fillText(min,200,270);
+        ctx.fillText(whiskerMax,200,54);
+        ctx.fillText(whiskerMin,200,194);
+        ctx.fillText(outliers_perc,200,300);
+
+        var linkX = 80;
+        var linkY = 340;
+        var linkHeight = 15;
+        var linkWidth;
+        var isLink = false;
+        var linkText = "Dettaglio distribuzione";
+        ctx.fillStyle = "#0000ff";
+        ctx.font = "12px Arial";
+        ctx.fillText(linkText, linkX, linkY);
+        var linkWidth = ctx.measureText(linkText).width;
+        c.addEventListener("mousemove", CanvasMouseMove, false);
+        c.addEventListener("click", Link_click, false);
+      }
+
+      // Set caret Position
+      tooltipEl.classList.remove('above', 'below', 'no-transform');
+      if (tooltipModel.yAlign) {
+          tooltipEl.classList.add(tooltipModel.yAlign);
+      } else {
+          tooltipEl.classList.add('no-transform');
+      }
+
+
+      var position = this._chart.canvas.getBoundingClientRect();
+
+      var x_tooltip = tooltipModel.caretX;
+      if(x_tooltip + tooltip_width < position.width){
+        tooltipEl.style.left = x_tooltip + 20 + 'px';
+      } else {
+        tooltipEl.style.left = x_tooltip - (tooltip_width + 30 ) + 'px';
+      }
+
+      // Display, position, and set styles for font
+      tooltipEl.style.opacity = 1;
+      tooltipEl.style.position = 'absolute';
+      tooltipEl.style.top = 0 + 'px';//position.top + tooltipModel.caretY + 'px';
+      tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+      tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+      tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+      tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+
+
+      function getBody(bodyItem) {
+          return bodyItem.lines;
+      }
+
+      function convertToHourMinString(val) {
+        var value = parseFloat(val);
+        const minutes = Math.floor(value % 60);
+        const hours = Math.floor(value / 60);
+        return hours + 'h ' + minutes + '\'';
+      }
+
+      function CanvasMouseMove(e) {
+          var x, y;
+          if (e.layerX || e.layerX == 0) { // for firefox
+              x = e.layerX;
+              y = e.layerY;
+          }
+          x -= c.offsetLeft;
+          y -= c.offsetTop;
+
+          if (x >= linkX && x <= (linkX + linkWidth)
+                  && y <= linkY && y >= (linkY - linkHeight)) {
+              document.body.style.cursor = "pointer";
+              isLink = true;
+          }
+          else {
+              document.body.style.cursor = "";
+              isLink = false;
+          }
+      }
+
+      function Link_click(e) {
+        var event = new CustomEvent("onClickLink");
+        wrapper[0].dispatchEvent(event);
+      }
+
+
+
+    },
+    callbacks: {
+      label: function label(item, data) {
+        var datasetLabel = data.datasets[item.datasetIndex].label || '';
+        var value = data.datasets[item.datasetIndex].data[item.index];
+        var b = asBoxPlotStats(value);
+        var label = datasetLabel + ' ' + (typeof item.xLabel === 'string' ? item.xLabel : item.yLabel);
+        if (!b) {
+          return label + 'NaN';
+        }
+        if(b.outlier_ext ) {
+          label += label + ' (min: ' + b.min + ', q1: ' + b.q1 + ', median: ' + b.median + ', mean: '+ b.mean +', q3: ' + b.q3 + ', max: ' + b.max + ', total: ' + b.total + ', wiskerMin: ' + b.whiskerMin + ', wiskerMax: ' + b.whiskerMax + ', outliers: ' + b.outlier_ext +')';
+        }else {
+          label += label + ' (min: ' + b.min + ', q1: ' + b.q1 + ', median: ' + b.median + ', mean: '+ b.mean +', q3: ' + b.q3 + ', max: ' + b.max + ', total: ' + b.total + ', wiskerMin: ' + b.whiskerMin + ', wiskerMax: ' + b.whiskerMax + ', outliers%: ' + parseFloat(b.outliers.length / b.total).toPrecision(3) * 100 +')';
+        }
+        return label
+      }
+    }
+  }
+};
 
 Chart.defaults.violin = Chart.helpers.merge({}, [Chart.defaults.bar, verticalDefaults, defaults$3]);
 Chart.defaults.horizontalViolin = Chart.helpers.merge({}, [Chart.defaults.horizontalBar, horizontalDefaults, defaults$3]);
