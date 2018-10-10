@@ -918,7 +918,6 @@ var Violin = Chart.elements.Violin = ArrayElementBase.extend({
 
       // draw median
       ctx.beginPath();
-      console.log('violin median', violin.median);
       ctx.arc(x, violin.median, 2, 0, 2 * Math.PI, false);
       ctx.fillStyle = '#ddd';
       ctx.stroke();
