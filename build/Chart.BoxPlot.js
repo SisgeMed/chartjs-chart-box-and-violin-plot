@@ -247,6 +247,7 @@ function mean$1(x) {
   }return m;
 }
 
+
 // Unbiased estimate of a sample's variance.
 // Also known as the sample variance, where the denominator is n - 1.
 function variance$1(x) {
@@ -419,7 +420,8 @@ function violinStats(arr) {
 
   var stats = null;
   if(arr.__stats) {
-    stats = {...arr.__stats};
+    // stats = {...arr.__stats};
+    stats = Object.assign({}, arr.__stats);
   }
 
   arr = arr.filter(function (v) {
