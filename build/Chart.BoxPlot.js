@@ -710,7 +710,7 @@ var BoxAndWiskers = Chart.elements.BoxAndWhiskers = ArrayElementBase.extend({
     ctx.lineWidth = vm.borderWidth;
 
     this._drawBoxPlot(vm, boxplot, ctx, vert);
-    this._drawOutliers(vm, boxplot, ctx, vert);
+    // this._drawOutliers(vm, boxplot, ctx, vert);
 
     ctx.restore();
   },
@@ -949,7 +949,7 @@ var Violin = Chart.elements.Violin = ArrayElementBase.extend({
     }
 
 
-    this._drawOutliers(vm, violin, ctx, vert);
+    // this._drawOutliers(vm, violin, ctx, vert);
 
     ctx.restore();
   },
